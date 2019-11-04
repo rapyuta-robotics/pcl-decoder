@@ -1,20 +1,38 @@
+extern crate js_sys;
+extern crate console_error_panic_hook;
+
 use scroll::Pread;
 use wasm_bindgen::prelude::*;
 
+// usize here represents 32bits for the pointer space, since wasm target is 32bit
+const MEMORY_WIDTH: usize = 5_000_000 * 32;
+
+#[wasm_bindgen]
+pub fn get_memory() -> JsValue {
+    wasm_bindgen::memory()
+}
+
+#[wasm_bindgen]
+pub fn get_memory_width() -> usize {
+    MEMORY_WIDTH
+}
+
 #[wasm_bindgen]
 pub struct PCLDecoder {
-    copy_memory_buffer: [u8; 60_000],
-    position_memory_buffer: [f32; 10_000 * 3],
-    color_memory_buffer: [f32; 10_000 * 3],
+    copy_memory_buffer: [u8; MEMORY_WIDTH],
+    position_memory_buffer: [f32; MEMORY_WIDTH / 4],
+    color_memory_buffer: [f32; MEMORY_WIDTH / 4],
 }
 
 #[wasm_bindgen]
 impl PCLDecoder {
+    #[wasm_bindgen(constructor)]
     pub fn new() -> PCLDecoder {
+        console_error_panic_hook::set_once();
         PCLDecoder {
-            copy_memory_buffer: [0; 60_000],
-            position_memory_buffer: [0.0; 10_000 * 3],
-            color_memory_buffer: [0.0; 10_000 * 3],
+            copy_memory_buffer: [0; MEMORY_WIDTH],
+            position_memory_buffer: [0.0; MEMORY_WIDTH / 4],
+            color_memory_buffer: [0.0; MEMORY_WIDTH / 4],
         }
     }
     pub fn get_copy_memory_ptr(&self) -> *const u8 {

@@ -1,6 +1,7 @@
 extern crate js_sys;
 extern crate console_error_panic_hook;
 
+use hsl::HSL;
 use scroll::Pread;
 use wasm_bindgen::prelude::*;
 
@@ -32,9 +33,10 @@ impl PCLDecoder {
         PCLDecoder {
             copy_memory_buffer: [0; MEMORY_WIDTH],
             position_memory_buffer: [0.0; MEMORY_WIDTH / 4],
-            color_memory_buffer: [0.0; MEMORY_WIDTH / 4],
+            color_memory_buffer: [0.0; MEMORY_WIDTH / 4]
         }
     }
+
     pub fn get_copy_memory_ptr(&self) -> *const u8 {
         self.copy_memory_buffer.as_ptr()
     }
@@ -95,22 +97,27 @@ impl PCLDecoder {
                     .pread_with::<f32>(stride + offset_intensity, scroll::LE)
                     .unwrap()
                     / 255.0;
-                let normalized_intensity = if intensity / 255.0 < 255.0 {
+                let normalized_intensity = if intensity < 360.0 {
                     intensity
                 } else {
-                    255.0
+                    360.0
                 };
-                self.color_memory_buffer[3 * i] = if use_rainbow {
-                    0.0
+
+                if use_rainbow {
+                    let color: (u8, u8, u8) = HSL {
+                        h: normalized_intensity as f64,
+                        s: 1.0,
+                        l: 0.5
+                    }.to_rgb();
+
+                    self.color_memory_buffer[3 * i] = color.2 as f32;
+                    self.color_memory_buffer[3 * i + 1] = color.1 as f32;
+                    self.color_memory_buffer[3 * i + 2] = color.0 as f32;
                 } else {
-                    normalized_intensity
-                };
-                self.color_memory_buffer[3 * i + 1] = normalized_intensity;
-                self.color_memory_buffer[3 * i + 2] = if use_rainbow {
-                    0.0
-                } else {
-                    normalized_intensity
-                };
+                    self.color_memory_buffer[3 * i] = normalized_intensity * (255.0/360.0);
+                    self.color_memory_buffer[3 * i + 1] = normalized_intensity * (255.0/360.0);
+                    self.color_memory_buffer[3 * i + 2] = normalized_intensity * (255.0/360.0);
+                }
             }
         }
     }

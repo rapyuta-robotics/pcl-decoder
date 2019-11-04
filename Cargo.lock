@@ -20,6 +20,11 @@ dependencies = [
 ]
 
 [[package]]
+name = "hsl"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
 name = "js-sys"
 version = "0.3.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -42,9 +47,10 @@ dependencies = [
 
 [[package]]
 name = "pcl-decoder"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "console_error_panic_hook 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hsl 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "js-sys 0.3.30 (registry+https://github.com/rust-lang/crates.io-index)",
  "scroll 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "wasm-bindgen 0.2.53 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -139,6 +145,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum bumpalo 2.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ad807f2fc2bf185eeb98ff3a901bd46dc5ad58163d0fa4577ba0d25674d71708"
 "checksum cfg-if 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)" = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
 "checksum console_error_panic_hook 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)" = "b8d976903543e0c48546a91908f21588a680a8c8f984df9a5d69feccb2b2a211"
+"checksum hsl 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "575fb7f1167f3b88ed825e90eb14918ac460461fdeaa3965c6a50951dee1c970"
 "checksum js-sys 0.3.30 (registry+https://github.com/rust-lang/crates.io-index)" = "a60f6ca5eb7ae3014e3ab34e3189a1560267245216e19f76a021a4c669817e62"
 "checksum lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 "checksum log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)" = "14b6052be84e6b71ab17edffc2eeabf5c2c3ae1fdb464aae35ac50c67a44e1f7"

@@ -1,12 +1,9 @@
-extern crate js_sys;
-extern crate console_error_panic_hook;
-
 use hsl::HSL;
 use scroll::Pread;
 use wasm_bindgen::prelude::*;
 
 // usize here represents 32bits for the pointer space, since wasm target is 32bit
-const MEMORY_WIDTH: usize = 5_000_000 * 32;
+const MEMORY_WIDTH: usize = 1_000_000 * 32;
 
 #[wasm_bindgen]
 pub fn get_memory() -> JsValue {
@@ -33,7 +30,7 @@ impl PCLDecoder {
         PCLDecoder {
             copy_memory_buffer: [0; MEMORY_WIDTH],
             position_memory_buffer: [0.0; MEMORY_WIDTH / 4],
-            color_memory_buffer: [0.0; MEMORY_WIDTH / 4]
+            color_memory_buffer: [0.0; MEMORY_WIDTH / 4],
         }
     }
 
@@ -77,26 +74,25 @@ impl PCLDecoder {
                 self.color_memory_buffer[3 * i] = (self
                     .copy_memory_buffer
                     .pread_with::<u8>(stride + offset_rgb + 2, scroll::LE)
-                    .unwrap()
-                    / 255) as f32;
+                    .unwrap() as f32
+                ) / 255.0;
                 self.color_memory_buffer[3 * i + 1] = (self
                     .copy_memory_buffer
                     .pread_with::<u8>(stride + offset_rgb + 1, scroll::LE)
-                    .unwrap()
-                    / 255) as f32;
+                    .unwrap() as f32
+                ) / 255.0;
                 self.color_memory_buffer[3 * i + 2] = (self
                     .copy_memory_buffer
                     .pread_with::<u8>(stride + offset_rgb, scroll::LE)
-                    .unwrap()
-                    / 255) as f32;
+                    .unwrap() as f32
+                ) / 255.0;
             }
 
             if offset_intensity != 0 && use_intensity_channel {
                 let intensity: f32 = self
                     .copy_memory_buffer
                     .pread_with::<f32>(stride + offset_intensity, scroll::LE)
-                    .unwrap()
-                    / 255.0;
+                    .unwrap();
                 let normalized_intensity = if intensity < 360.0 {
                     intensity
                 } else {
@@ -107,16 +103,16 @@ impl PCLDecoder {
                     let color: (u8, u8, u8) = HSL {
                         h: normalized_intensity as f64,
                         s: 1.0,
-                        l: 0.5
+                        l: 0.5,
                     }.to_rgb();
 
-                    self.color_memory_buffer[3 * i] = color.2 as f32;
-                    self.color_memory_buffer[3 * i + 1] = color.1 as f32;
-                    self.color_memory_buffer[3 * i + 2] = color.0 as f32;
+                    self.color_memory_buffer[3 * i] = (color.0 as f32) / 255.0;
+                    self.color_memory_buffer[3 * i + 1] = (color.1 as f32) / 255.0;
+                    self.color_memory_buffer[3 * i + 2] = (color.2 as f32) / 255.0;
                 } else {
-                    self.color_memory_buffer[3 * i] = normalized_intensity * (255.0/360.0);
-                    self.color_memory_buffer[3 * i + 1] = normalized_intensity * (255.0/360.0);
-                    self.color_memory_buffer[3 * i + 2] = normalized_intensity * (255.0/360.0);
+                    self.color_memory_buffer[3 * i] = normalized_intensity / 360.0;
+                    self.color_memory_buffer[3 * i + 1] = normalized_intensity / 360.0;
+                    self.color_memory_buffer[3 * i + 2] = normalized_intensity / 360.0;
                 }
             }
         }

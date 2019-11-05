@@ -47,7 +47,7 @@ dependencies = [
 
 [[package]]
 name = "pcl-decoder"
-version = "0.1.6"
+version = "0.1.8"
 dependencies = [
  "console_error_panic_hook 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "hsl 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",

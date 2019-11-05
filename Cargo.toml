@@ -1,7 +1,7 @@
 [package]
 name = "pcl-decoder"
 description = "A point cloud decoder written in rust, compiled to wasm. To be used in rapyuta-robotics/amphion"
-version = "0.1.6"
+version = "0.1.8"
 authors = ["Ashish Chaudhary <iamashishchaudhary@gmail.com>"]
 categories = ["wasm"]
 readme = "README.md"
